@@ -1,0 +1,30 @@
+drop columns whose name contain a given string:
+df.drop(list(df.filter(regex = 'C')),axis=1, inplace = True)
+or second method:
+df.drop(columns=df.columns[df.columns.str.startswith('C')])
+
+
+Remove the index name:
+df = df.rename_axis(None, axis=0)
+
+Keep only some columns:
+df[['col1','col2']]
+
+
+Replicate rows of a dataframe x times, keeping the same rows index names:
+df_repeated = df.loc[df.index.repeat(x)]
+
+Add index column:
+1. either when loading the csv file: 
+df=pd.read_csv('file.csv',sep=',',index_col='name col to be used as index col')
+2. or later:
+df=df.set_index('name col to be used as index col')
+
+Delete unwanted part of a string in whole column of df:
+df['col'] = df['col'].map(lambda x: x.lstrip('string to remove on the left side').rstrip('on the right side'))
+
+Remove the NaN:
+df = df.dropna()
+
+Print a row of a df:
+print(df.iloc[row_index]) or with a value rather than a idx: print(df.loc[value])

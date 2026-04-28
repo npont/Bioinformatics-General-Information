@@ -1,0 +1,10 @@
+conda activate sequana_env
+
+cd GLOBAL_DIR_OF_MY_SEQUENCING_RUN 	## (where there are folders like Data/ InterOp/ etc)
+
+sequana_demultiplex --bcl-directory ./  --sample-sheet SampleSheet.csv  --merging-strategy merge
+
+cd fastq/ 	## or cd demultiplex/ it depends on which folder the previous cmd created in my working directory
+
+sbatch -c 1 --wrap "sh demultiplex.sh" 		## the config already contains the clusters resources requirements so just type this cmd without thinking about the memory or cpu needed
+

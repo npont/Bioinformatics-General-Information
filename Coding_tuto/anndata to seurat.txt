@@ -1,0 +1,4 @@
+## Load h5ad file onto Seurat ##
+library(anndata)
+adata <- read_h5ad(path_to_h5ad_file)
+seu <- CreateSeuratObject(counts = t(as.matrix(adata$X)), meta.data = adata$obs)

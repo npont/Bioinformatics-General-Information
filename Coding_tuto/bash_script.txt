@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#SBATCH --job-name=methylation_prepare
+#SBATCH --output=logs/methylation_prepare-%j.out
+#SBATCH --error=logs/methylation_prepare-%j.err
+#SBATCH --partition=common
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=1G
+
+Help()
+{
+        echo "description written here"
+        echo
+        echo "description patati patata"
+}
+
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    Help
+    exit 0
+fi

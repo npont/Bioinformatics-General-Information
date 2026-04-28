@@ -1,0 +1,33 @@
+#### Import all tsv files present in a directory (in python) ####
+# and store them into a dictionary
+
+
+import glob
+import os
+directory = f"absolute_path"
+tsv_files = glob.glob(os.path.join(directory, "*.tsv"))
+
+data = {}
+
+for file_path in tsv_files:
+    # Extract filename without extension and path
+    filename = os.path.basename(file_path)
+    basename = os.path.splitext(filename)[0]  
+    
+    # Create dataframe name 
+    df_name = f"data_{basename}" #you can add basename.replace('pattern_to_be_replaced', 'replacement') if you wanna modify something in basename
+    
+    # Read TSV file
+    df = pd.read_csv(file_path, sep="\t", index_col=0)
+    
+    
+    # Store dataframes in dictionary
+    dict_key = basename
+    data[dict_key] = processed_df
+
+print("Loaded dataframes:", list(data.keys()))
+
+# Example access a dataframe with
+data["one_of_the_basenames"]
+
+

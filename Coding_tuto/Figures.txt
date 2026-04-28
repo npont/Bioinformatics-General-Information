@@ -1,0 +1,23 @@
+import matplotlib.pyplot as plt
+
+
+plt.figure(figsize=(10,8))
+plt.scatter(dict_A_diff.keys(),dict_A_diff.values()) #plt.scatter(x,y)
+plt.title('title')
+plt.xlabel('rien')
+plt.ylabel('rien')
+plt.savefig(f'../output/my_scatter.png')
+plt.close()
+
+
+
+
+####or using searborn####
+sns.set_style('white')
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(width, height))
+box1 = sns.boxplot(data=df, palette='flare', ax=ax1,showfliers=False) #to last argument is to remove outliers
+box1.set_title('title')
+box2 = sns.boxplot(data=df_2, palette='flare', ax=ax2, showfliers=False)
+box2.set_title('title2')
+fig.savefig("../output/figure_name.png") #will save both subfigures on the same figure
+plt.show()

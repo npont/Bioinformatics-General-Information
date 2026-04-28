@@ -1,0 +1,52 @@
+### Export Jupyter Notebook to html HIDING THE CODE CELLS IN THE OUTPUT ###
+
+# Activate a conda environment having a link to a jupyter kernel 
+
+# From the terminal
+jupyter nbconvert --no-input my_notebook_name.ipynb --to html --output file_name_output.html
+
+# example: jupyter nbconvert --no-input Markers_Identification_Pseudobulk.ipynb --to html --output Markers_Identification_Pseudobulk_25cells_785Genes.html
+
+# or to pdf or any type 
+
+
+
+
+
+################# Using quarto ##################################
+module load quarto
+quarto render Markers_Identification_Pseudobulk.ipynb --to html --output name_of_file.html
+# or pdf generation
+quarto render Markers_Identification_Pseudobulk.ipynb --to pdf --toc --output name_of_file.html
+# toc option is used for table of contents generation
+
+## also MANDATORY: ##
+
+# For html generation (with code hidden): Add the following at top of notebook, in a code cell of type Raw
+---
+title: "Markers Identification Pseudobulk"
+format:
+  html:
+    toc: true
+    code-fold: true
+    html-math-method: katex
+    css: styles.css
+    self-contained: true
+jupyter: python3
+---
+
+
+
+# For pdf generation (with code hidden): Add this at top of notebook in a code cell of type Raw
+---
+title: "Markers Identification Pseudobulk"
+format: 
+  pdf:
+    keep-tex: true
+    include-in-header: 
+       text: |
+         \usepackage{fvextra}
+         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+         \DefineVerbatimEnvironment{OutputCode}{Verbatim}{breaklines,commandchars=\\\{\}}
+    echo: false
+---

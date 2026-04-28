@@ -1,0 +1,5 @@
+### Check memory usage and content + Tool to easily clean directories
+
+ncdu
+
+# then type ? and it gives you all info to easily clean

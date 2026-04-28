@@ -1,0 +1,26 @@
+library(UpSetR)
+
+# Input expression matrix of genes expressions averaged across cells of a cell type
+cluster_expr_tmp <- as.data.frame(cluster_expr)
+
+# Make it binary
+cluster_expr_binary <- ifelse(cluster_expr_tmp > 0, 1, 0)
+
+rm(cluster_expr_tmp)
+
+# Convert each cell type column to a vector of expressed genes
+gene_lists <- lapply(colnames(cluster_expr_binary), function(cell_type) {
+  rownames(cluster_expr_binary)[cluster_expr_binary[, cell_type] == 1]
+})
+names(gene_lists) <- colnames(cluster_expr_binary)
+
+desired_order <- c("progenitors", "mixed_1", "mixed_2", "mature_1", "mature_2", "mature_3", "mature_4")
+ordered_gene_lists <- gene_lists[desired_order]
+
+# Create the Upset plot
+
+upset(fromList(gene_lists),
+      nsets = length(gene_lists),
+      keep.order = T, 
+      sets = rev(c("progenitors", "mixed_1", "mixed_2", "mature_1", "mature_2", "mature_3", "mature_4")))
+

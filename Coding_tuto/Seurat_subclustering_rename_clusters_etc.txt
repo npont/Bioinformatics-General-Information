@@ -1,0 +1,43 @@
+#### Subcluster Seurat ####
+
+## Using Subset ##
+
+# for later merging with subclusters to have both clusters that did not go to subclustering and the new subclusters
+object_2_3$subcluster <- Idents(object_2_3)
+object_2_3.sub.1 <- subset(object_2_3, subset = unintegrated_clusters == 1)
+object_2_3.sub.1 <- FindVariableFeatures(object_2_3.sub.1)
+object_2_3.sub.1 <- ScaleData(object_2_3.sub.1)
+object_2_3.sub.1 <- RunPCA(object_2_3.sub.1, verbose = FALSE)
+object_2_3.sub.1 <- RunUMAP(object_2_3.sub.1, reduction = "pca", dims = 1:30)
+object_2_3.sub.1 <- FindNeighbors(object_2_3.sub.1, reduction = "pca", dims = 1:30)
+object_2_3.sub.1 <- FindClusters(object_2_3.sub.1, resolution = 1)
+# Add new clusters to the original object
+tmp_metadata <- data.frame(
+  subcluster = paste0("mature_", object_2_3.sub.1$seurat_clusters))
+rownames(tmp_metadata) <- colnames(object_2_3.sub.1)
+object_2_3<- AddMetaData(object_2_3, tmp_metadata)
+DimPlot(object_2_3, group.by="subcluster")
+
+
+
+
+## Using FindSubCluster of Seurat
+# add graph.name in findneighbors and findclusters as follows during clustering
+object <- FindNeighbors(object, dims = 1:NPCs, reduction = "pca", graph.name="test")
+object <- FindClusters(object, resolution = RES, cluster.name = "unintegrated_clusters", graph.name="test")
+object <- RunUMAP(object, dims = 1:NPCs, reduction = "pca", reduction.name = "umap", seed.use = 57) #setting a seed to ensure reproducibility of results when applied to the same data
+DimPlot(object, reduction = "umap", label=TRUE)
+object <- FindSubCluster(object, "REPLACE BY CLUSTER NUMBER TO BE SUBCLUSTERED", graph.name="test", subcluster.name = "NAME THE SUBCLUSTER",  resolution = 1) #resolution can be modified as hyperparameter like in clustering
+DimPlot(object, reduction = "umap", group.by = "NAME OF SUBCLUSTER", label = TRUE)
+
+
+
+
+#### Rename clusters ####
+
+# Create a named vector with old cluster IDs as names and new names as values
+new.cluster.ids <- c("Cell Type 1", "Cell Type 2", "Cell Type 3", "Cell Type 4", "Cell Type 5")
+names(new.cluster.ids) <- levels(object)
+
+# Rename the clusters
+object <- RenameIdents(object, new.cluster.ids)

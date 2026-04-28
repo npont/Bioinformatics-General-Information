@@ -1,0 +1,13 @@
+## Download data from GEO ##
+tuto: https://hbctraining.github.io/Accessing_public_genomic_data/lessons/accessing_public_experimental_data.html
+
+
+# go to GEO website: www.ncbi.nlm.nih.gov/geo/
+# click on FTP Site in Tools
+# click on Series/
+# Click on the GSE starting with the nb of interest (from the paper) [e.g. for GSE280296, click on GSE280nnn/ and then GSE280296/]
+# Copy the link of suppl/
+
+# On the cluster
+srun wget --recursive --no-parent -nd ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE280nnn/GSE280296/suppl/ ##WHERE I'VE REPLACED THE https:// by ftp://
+

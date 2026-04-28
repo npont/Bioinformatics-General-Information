@@ -1,0 +1,17 @@
+### DEA best practices: raw or normalized data? ###
+
+
+# for scanpy function sc.tl.rank_genes_groups: use log normalized data. 
+By default it uses the adata.raw as input if present. And expects it to be logarithmized. So the best is to save log normalized data to layer "counts" and then use it:
+adata.raw = adata.copy() 
+adata.layers["counts"] = adata.raw.X
+sc.pp.normalize_total(adata, inplace=True)
+sc.pp.log1p(adata)
+adata.layers["log_norm"] = adata.X 
+sc.tl.rank_genes_groups(adata, layers="log_norm", use_raw=False, ...)
+
+
+
+# DESeq2: expects un-normalized data!!
+
+

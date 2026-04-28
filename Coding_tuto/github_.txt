@@ -1,0 +1,125 @@
+#### Tutorial: https://wiki.epfl.ch/git-epfl/documents/git.html #####
+
+# I generated a classic personal token from github > npont (right top corner) > settings > developer settings (at the bottom left) > Personal Access Tokens > Tokens (classic)
+# I allowed all permissions (expiration date was the latest I could: january 2027)
+
+# Then I needed to store the token somewhere and decided to use GitHub CLI (https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git)
+# Install github CLI in my conda (base):
+conda install gh --channel conda-forge
+gh auth login
+? Where do you use GitHub? GitHub.com
+? What is your preferred protocol for Git operations on this host? HTTPS
+? Authenticate Git with your GitHub credentials? Yes
+? How would you like to authenticate GitHub CLI? Paste an authentication token
+Tip: you can generate a Personal Access Token here https://github.com/settings/tokens
+The minimum required scopes are 'repo', 'read:org', 'workflow'.
+? Paste your authentication token: ****************************************
+- gh config set -h github.com git_protocol https
+✓ Configured git protocol
+! Authentication credentials saved in plain text
+✓ Logged in as npont
+
+
+
+## EXPLANATIONS GIT COMMIT OR GIT ADD ##
+Classical workflow is:
+git pull origin main #to make sure you're updated and don't create conflicts (if the content of a file is different on github and in my local directory, the one in the local directory will be kept)
+git add files_names
+git commit -m "my message"
+git push origin main 
+# git add will stage files, meaning they go from my local directory to a sort of waiting room (git status)
+# git commit will make them go from the waiting room to github repo (git log)
+
+
+
+# See the branch on which I am
+git branch -a
+
+# Unstage everything
+git restore --staged .
+
+# See staging status
+git status
+
+## START A GITHUB PROJECT ## (Tuto: https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github)
+### METHOD 1 ###
+# Create a repository on GitHub.com # 
+# then copy its https URL 
+# Go on the terminal to where I have my project scripts and type
+git init
+git config --global init.defaultBranch main 
+git add .
+git commit -m "Initial commit: Analysis of ZF genome DCM motifs"
+git remote add origin https://github.com/zen-laboratory/DCM_Motifs_in_Zebrafish_Genome.git
+git pull origin main
+git push -u origin main
+
+### METHOD 2 ###
+# Create the repo from the terminal directly
+git init #in the project folder
+git add .
+git commit -m "First commit"
+gh repo create zen-laboratory/DCM_motifs_in_ZF_Genome --source=. --private --push
+
+
+
+
+# Store files on github
+git add files #or git add folder/
+git commit -m "msg to commit"
+git push origin main
+
+# Then to store files/folders onto github if they're large files (using LFS)
+git lfs track *.extension
+git add .gitattributes myfile_that_I_track
+git commit -m "pushing msg hihi"
+git push origin main
+
+# Don't forget to git pull before doing a git add ! altho nothing changed on the remote repo, otherwise branches are not up to date
+
+# If you want to see your previous commit / commit historial
+git log
+
+# If you want to remove commit, use git HEAD~n where n is the nb of commits you want to go back to
+# example: I want to remove what I've staged (=git add) during the two previous commit :
+git reset HEAD~2
+
+
+
+
+# interesting commands also:
+git status
+git diff 
+
+
+
+
+
+
+# Increase the HTTPS buffer size to avoid error 408 or network issue or timeout error
+git config --global http.postBuffer 524288000  # 500MB buffer
+git lfs track complementary_genes_overlap.ipynb
+git add complementary_genes_overlap.ipynb .gitattributes
+git commit -m "first commit test"
+git push -u origin main
+
+
+
+# Re-organize directory / move files and keep it tracked by github
+git mv my_files my_subdirectory/ #or same to rename
+git add my_subdirectory/
+git commit -m "my message"
+git push origin main
+
+
+# Add files to .gitignore if you want to make sure they won't be pushed (e.g. large files you don't want to push)
+echo file_name >> .gitignore
+git add .gitignore
+...git add the other files you wanna push...
+git commit -m "my msg"
+git push origin main
+
+
+
+
+

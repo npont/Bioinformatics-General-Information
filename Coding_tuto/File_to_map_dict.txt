@@ -1,0 +1,39 @@
+Code to add a column to a dataframe, where the entries match the entries in another column already present in the df. For e.g. we have a tab separated file
+with one column corresponding to the gene name and another column to the transcript ID corresponding. In a dataframe, we have a column with the transcript ID (among other columns) and we want to add a transcript ID column where the transcript ID entries match the corresponding gene name. We use a mapping dictionary:
+
+############In Python############### We create a dictionary
+
+myMap = {}
+with open("transcript_to_gene.tsv") as f:
+    for line in f:
+       transcript, gene = line.split("\t")
+       myMap[transcript] = gene.strip()
+
+#print a few entries:
+dict(list(myMap.items())[0: 5])
+
+#Add the new column to the corresponding rows
+df['gene_ID'] = df['Transcript_ID'].map(myMap).fillna('Unknown')
+
+
+
+
+#############In R###################### We create a named vector
+
+library(dplyr)
+
+# Read the mapping file and create a named vector
+myMap <- read.delim("transcript_to_gene.tsv", header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+names(myMap) <- c("Transcript_ID", "Gene_ID")
+myMap <- setNames(myMap$Gene_ID, myMap$Transcript_ID)
+
+head(myMap, 5)  
+
+# Add the new column to the corresponding rows in the dataframe
+df <- df %>%
+  mutate(gene_ID = ifelse(Transcript_ID %in% names(myMap), myMap[Transcript_ID], "Unknown"))
+
+
+
+
+

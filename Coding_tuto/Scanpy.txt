@@ -1,0 +1,114 @@
+###### Scanpy ######
+
+
+### Raw and normalize - Best Practices ###
+#### Method1 - using layers
+# Save the raw counts as a layer
+adata.layers["counts"] = adata.X.copy()
+# Normalize
+sc.pp.normalize_total(adata)
+# Log transform
+sc.pp.log1p(adata)
+# Save the normalized version as a layer
+adata["log_normalized"] = adata.X.copy()
+
+#### Method2 - using raw
+# OR save raw counts in raw
+adata.raw = adata.copy() 
+# it means now adata.raw.X contains the raw count matrix
+... normalize ...
+# after normalization the adata.X contains the normalized count matrix
+# retrieve the raw counts with 
+adata.raw.to_adata() that will then store into adata.X the raw version
+
+
+
+## Example:
+adata = sc.read_h5ad("./AnnData_Objects/D1_embryo_head_with_anatomical_clusters.h5ad")
+adata.layers["counts"] = adata.raw.X.copy()
+adata.layers["log_norm"] = adata.X.copy() #if it was normalized before
+# and then print count matrix
+adata.to_df(layer="log_norm").head()
+
+
+
+
+## Plot and save umap, while checking for genes that are in the AnnData object ##
+
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import rc_context
+
+#add the following to choose the figure size in a block above sc.pl.umap  
+#with rc_context({"figure.figsize": (6, 6)}):
+
+
+# Check which genes to plot are in the AnnData object
+existing_genes = [g for g in genes_to_plot_list if g in adata.var.index]
+non_existing_genes = [g for g in genes_to_plot_list if g not in adata.var.index]
+print(f"Following genes are candidate marker genes derived from visiumHD analysis, \nthat are not in the scRNA-seq atlas: {non_existing_genes}")
+
+# Plot
+if not existing_genes:
+    print("No genes found in AnnData!")
+else:   
+    sc.pl.umap(
+        adata,
+        color=existing_genes,
+        s=10,
+        frameon=False,
+        ncols=1,
+        vmax="p99",
+        show=False
+    )
+
+    plt.savefig("./genes_on_umap.pdf", bbox_inches="tight")
+
+
+## Check for a given gene in the AnnData object ##
+adata.var.loc[adata.var['gene_ids']=='ENSG00000164093']
+# Or
+print("PITX2" in adata.var.index)
+# Or 
+genes=list(adata.var.index)
+print(genes.index('PITX2'))
+
+
+
+
+############ Spatial object ############
+# Plot gene expression on tissue and save
+fig, ax = plt.subplots(figsize=(10, 8))
+sc.pl.spatial(
+    adata,
+    color="MYOG",
+    spot_size=100,
+    color_map=orange_red_cmap,
+    ax=ax,          # Pass your axis
+    show=False      # Don't display, allows saving. OTHERWISE IT DOES NOT SAVE IT
+)
+plt.savefig('myog.svg', bbox_inches='tight')
+
+
+
+
+
+###### Plot cells co-expressing marker ######
+import numpy as np
+
+# Indices of the genes:
+idx_MYF5 = adata.var_names.get_loc('MYF5')
+idx_MYOG = adata.var_names.get_loc('MYOG')
+
+# Extract expression values; convert to dense if sparse
+expr_MYF5 = adata.X[:, idx_MYF5].toarray().flatten() if hasattr(adata.X, "toarray") else adata.X[:, idx_MYF5]
+expr_MYOG = adata.X[:, idx_MYOG].toarray().flatten() if hasattr(adata.X, "toarray") else adata.X[:, idx_MYOG]
+
+# Find cells where both markers are expressed (expression > 0)
+coexpress_mask = (expr_MYF5 > 0) & (expr_MYOG > 0)
+
+# Subset adata to these cells:
+adata_coexpress = adata[coexpress_mask].copy()
+
+adata.obs['MYF5_MYOG_coexpress'] = coexpress_mask
+
+sc.pl.umap(adata, color='MYF5_MYOG_coexpress')

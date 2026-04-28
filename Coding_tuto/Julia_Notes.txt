@@ -1,0 +1,13 @@
+#Install packages in julia
+#from terminal type
+julia
+using Pkg
+Pkg.add("package_name")
+
+#then load package
+using package_name
+
+#we can lso install in a local environment
+ENV["JULIA_DEPOT_PATH"] = "path/to/your/local/julia/packages"
+Pkg.add("BioSequences")
+

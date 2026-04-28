@@ -1,0 +1,10 @@
+# Colormap
+from matplotlib.colors import LinearSegmentedColormap
+violet_colors = ["#f3e5f5", "#ce93d8", "#ab47bc", "#6a1b9a", "#4a148c"]
+violet_cmap = LinearSegmentedColormap.from_list("violet_gradient", violet_colors)
+# Slightly darker to better appreciate the tissue 
+violet_colors_2 = ["#e1c9e4", "#ce93d8", "#ab47bc", "#6a1b9a", "#4a148c"]
+violet_cmap_2 = LinearSegmentedColormap.from_list("violet_gradient", violet_colors_2)
+# orange _ red map
+orange_red_palette = ["#e5e7e9", "#f6ddcc", "#f0b27a", "#ca6f1e", "#c0392b", "#922b21"]
+orange_red_cmap = LinearSegmentedColormap.from_list("range_gradient", orange_red_palette)

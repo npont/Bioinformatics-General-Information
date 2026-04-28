@@ -1,0 +1,38 @@
+### Create a conda environment based on a yml file ###
+
+# Config file:
+vi environment.yml
+
+# Its content:
+name: st_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pandas
+  - numpy
+  - matplotlib
+  - plotly
+  - anndata
+  - scanpy
+  - geopandas
+  - shapely
+  - seaborn
+  - scikit-image
+  - tifffile
+  - csbdeep
+  - stardist
+  - scipy
+  - palantir
+  - jupyterlab  # Optional, but useful for notebooks
+
+
+
+# Then 
+conda env create -f environment.yml
+conda activate st_env
+
+# Then add it to jupyter kernel
+conda install -c anaconda ipykernel
+python -m ipykernel install --user --name=st_env

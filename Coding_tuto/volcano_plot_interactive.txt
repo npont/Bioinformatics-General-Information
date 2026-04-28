@@ -1,0 +1,50 @@
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+
+# Thresholds
+padj_threshold = 0.05
+logfc_threshold = 0.5 #Use 0 if you want FC>|1| but here we add some stringency, this threshold can vary according to the experiment
+
+# Compute -log10(adjusted p-value)
+df['neg_log10_padj'] = -np.log10(df['pvals_adj'])
+
+# Assign colors
+def assign_color(row):
+    if row['pvals_adj'] < padj_threshold:
+        if row['logfoldchanges'] > logfc_threshold:
+            return 'blue'   # Upregulated
+        elif row['logfoldchanges'] < -logfc_threshold:
+            return 'red'    # Downregulated
+    return 'rgba(150,150,150,0.5)'  # Not significant
+
+df['color'] = df.apply(assign_color, axis=1)
+
+# Create the figure
+fig = go.Figure()
+
+fig.add_trace(
+    go.Scattergl(
+        x=df['logfoldchanges'],
+        y=df['neg_log10_padj'],
+        mode='markers',
+        text=df['names'],  # Gene names
+        hovertemplate='%{text}<br>log2FC: %{x}<br>-log10(padj): %{y}<extra></extra>',
+        marker=dict(
+            color=df['color'],
+            size=4,
+        )
+    )
+)
+
+# Layout
+fig.update_layout(
+    title='Volcano Plot: EOM vs Other Muscle',
+    xaxis_title='log2 Fold Change',
+    yaxis_title='-log10(adjusted p-value)',
+    paper_bgcolor='white',
+    plot_bgcolor='white',
+)
+
+# Save to HTML (for remote viewing or download)
+fig.write_html("volcano_plot.html")

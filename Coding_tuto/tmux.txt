@@ -1,0 +1,57 @@
+##tmux##
+
+-> Note: Ctrl-b means Press Ctrl and b simultaneously
+
+#split panel into right and left
+Ctrl-b %
+
+#split panel into bottom and top
+Ctrl-b "
+
+#go to left panel
+Ctrl-b <left key>
+
+#make a panel bigger
+Ctrl-b <maintain the key left or right pressed>
+
+#Exit
+Ctrl d
+
+#New window
+Ctrl-b c
+
+#Previous window
+Ctrl-b p
+
+#Next window
+Ctrl-b n
+
+#Go to a certain session with a given nb
+Ctrl-b <nber>
+
+#Detach from current session
+Ctrl-b d
+
+#Choose to which session detach
+Ctrl-b D
+
+#List current running sessions
+tmux ls
+
+#Attach to given session
+tmux attach -t <nber of that session>
+
+#To name sessions rather than just having nb
+tmux new -s <my_custom_name>
+
+#Rename existing session
+tmux rename-session -t <nber of the session to rename> <my_custom_name>
+
+#make a pane go full screen (and same to shrink it back)
+Ctrl-b z
+
+#resize pane in direction of arrow key
+Ctrl C-<arrow key>
+
+#Rename current window 
+Ctrl-b ,

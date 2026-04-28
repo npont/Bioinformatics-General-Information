@@ -1,0 +1,48 @@
+# Replace in all files in directory sox2high to sox2highlow
+find . -type f -name "*48_ss_sox2*" | while read file; do
+    newfile="${file/sox2high/sox2highlow}"
+    mv "$file" "$newfile"
+done
+
+
+find . -type f -name "*48_mb_sox2*" | while read file; do
+    newfile="${file/sox2high/sox2highlow}"
+    mv "$file" "$newfile"
+done
+
+
+
+
+
+
+for d in 48_*_sox2high*/; do
+    newname="${d/sox2high/sox2highlow}"
+    mv "$d" "$newname"
+done
+
+
+# Rename all fastq.gz file names in all folders present in current directory
+find . -type f -path "*sox2highlow*" -name "*sox2high*.fastq.gz" | while read file; do
+    newfile="${file/sox2high/sox2highlow}"
+    mv "$file" "$newfile"
+done
+
+
+find . -type f -path "*sox2high*" -name "*sox2high*.fastq.gz" | while read file; do
+    newfile="${file/sox2high/sox2highlow}"
+    mv "$file" "$newfile"
+done
+
+
+
+touch DCM_sites.tsv
+for file in *.bed.gz ; do
+    nb_dcm_sites=$(zcat "$file" | wc -l)
+    sample=${file%%_S*}
+    echo -e "$sample\t$nb_dcm_sites" >> DCM_sites.tsv
+done
+
+
+
+
+

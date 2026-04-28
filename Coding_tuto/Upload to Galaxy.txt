@@ -1,0 +1,23 @@
+# create galaxy-upload conda environment
+
+conda env create -f galaxy-upload_env.yml
+
+conda activate galaxy-upload
+
+# Get and copy the history id of the newly-created history (create the history beforehand on Galaxy website)
+
+galaxy-history-search --api-key <api_key_to_be_pasted_here> --url https://usegalaxy.org 
+          
+# Optional: tar gzip your file before uploading to galaxy
+
+tar czvf my_file.tar.gz my_file.rds
+
+# Upload your files to the history with
+
+galaxy-upload --history-id <history_id_to_be_pasted_here> --url https://usegalaxy.org --api-key <api_key_to_be_pasted_here> YOUR_FILE_HERE
+
+# OR upload all files at once with:
+
+for file in *.tar.gz; do
+galaxy-upload --history-id <history_id_to_be_pasted_here> --url https://usegalaxy.org --api-key <api_key_to_be_pasted_here> $file
+done

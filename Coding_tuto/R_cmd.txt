@@ -1,0 +1,257 @@
+#Install packages from the cluster terminal
+module load R/4.4.0 gcc libxml2 libiconv freetype fontconfig harfbuzz fribidi curl
+R_install_packages PACKAGE_NAME_TO_INSTALL
+
+
+# GitHub
+remotes::install_github("MTES-MCT/savoirfR")  
+
+# Restart R in Rstudio i.e. restart session:
+ctrl maj F10
+ou
+.rs.restartR()
+
+# Get current directory:
+getwd()
+
+# Install and load packages:
+install.packages("GGally")
+library(GGally)
+
+#from Linux terminal to see list of installed packages
+(.packages())
+
+#in R see my packages
+installed.packages()
+
+#See where are my libraries
+.libPaths()
+
+#Version of package
+packageVersion("Matrix")
+
+#check for a specific package in my packages
+"package_name" %in% rownames(installed.packages())
+
+# Data:
+variable_test <- 3
+variable_test <- "coucou"
+variables_test <- c("coucou", "cv") 
+sequence <- seq(from = 1, to = 10, by = 1)	 ou	sequence = 1:10
+repetition <- rep("bla", 3)
+
+# Lister mes variables:
+ls()
+
+# Supprimer une variable:
+rm(variable_test)
+
+# Supprimer toutes les variables existantes
+rm(list = ls())
+
+# Concaténer des variables:
+var <- paste("a", "c")
+
+# Voir les infos d'une fct:
+help(function)			e.g. help(paste)
+
+# Si plusieurs packages ont une fct avec le même nom:
+nom_du_package::nom_de_la_fonction(objet)
+
+# Path d'un package
+path.package("savoirfR")
+
+#Version d'un package
+packageVersion("Matrix")
+
+#Remove a package: run Rstudio as administrator
+remove.packages("Matrix",lib="C:/Program Files/R/R-4.3.0/library/")
+
+#List the packages in my library
+lib_loc <- .libPaths()
+installed_packages <- installed.packages(lib.loc = lib_loc)
+installed_packages[, "Package"]
+
+# Localiser un fichier
+file_path <- system.file("extdata", "Base_synth_territoires.csv", package = "savoirfR")
+
+
+#Install a package from GitHub in a specified library path (e.g. if I use renv): use remotes package
+remotes::install_github("immunogenomics/presto", lib="W:/Naomie/Lieng_Melina_2/renv/library/R-4.3/x86_64-w64-mingw32")
+
+#Install a github package in the default library directory
+devtools::install_github("immunogenomics/presto")
+
+
+#Open the file dialog box to choose a directory such that it stores its path automatically
+filename <- file.choose()
+
+#Open a RDS file
+file_rds <- readRDS(filename)
+
+
+## Table and dataframe ## index starts at 1
+tab_name[1,3] #to display row 1 and column 3
+tab_name[2,] #to display all columns of row 2
+tab_name[1:4, c(3,6)] #to display rows 1 to 4 included and columns 3 and 6
+
+
+## Dataframes ##
+
+column_1 <- c(1,2,3)
+column_2 <- c("cc","cv","oui")
+df <- data.frame(column_1, column_2)
+# names of the columns of the df will be 'column_1' and 'column_2'
+or df <- data.frame("name_col1" = column_1, "name_col2" = column_2)
+
+nrow(df)
+ncol(df)
+dim(df)
+names(df) #columns names
+head(df)
+tail(df)
+
+# display values of column 'col1'
+str(pull(df, col1))
+
+#modify the df or table
+df <- mutate(df, NouvelleVariable = DefinitionDeLaVariable)
+
+#Select columns
+df <- select(df,col1,col2, etc)
+or to discard:
+df <- select(df, -col1, -col2, etc) 
+
+#Filter
+df <- filter(df, col1 == "300" & col5 > 10000)
+Or according to values in a list of values:
+df <- filter(df, col1 %in% c(...))   #WARNING: this will only keep rows where the condition in col1 was checked
+
+#Duplicate a column:
+df$col2 <- df$col
+
+#Rename
+base <- rename(base, nouveau_nom = ancien_nom)
+
+#Apply functions in a sequential manner using %>%       (from package dplyr)
+For e.g.
+selection_62 <- base %>%
+  mutate(densite = P14_POP / SUPERF,
+         tx_natal = 1000 * NAISD15 / P14_POP,
+         tx_mort = 1000 * DECESD15 / P14_POP) %>%
+  select(CODGEO, ZAU, REG, DEP, densite, tx_natal) %>%
+  filter(DEP == "62")
+
+## Statistiques ##
+summary(df)
+
+# of one column particularly
+df %>% 
+  pull(col1) %>% 
+  summary()
+
+# one statistic in particular
+df %>% 
+  pull(P14_POP) %>% 
+  mean(na.rm = TRUE)
+# or
+df_med <- df %>%
+    summarise(population_med = mean(P14_POP, na.rm = T))
+
+# Compute deciles
+deciles <- quantile(df$col1, probs = seq(0.1, 0.9, by = 0.1), na.rm=T)
+
+# compute quartiles
+quartiles <- quantile(df$col1, probs = c(0.25, 0.5, 0.75), na.rm=T)
+
+# Standardize/normalize/calculer une variable 'centrée réduite'
+scale(df$col1)
+
+# Table contingeantes (i.e. afficher pour chaque valeur distincte de ZAU, cb il y en a pour chaque valeur de REG)
+t <- df %>% 
+  select(ZAU, REG) %>% 
+  table()
+
+
+
+## Plots/graph/figures ##
+
+# histogram
+ggplot(data = df, mapping = aes(x = col1)) + geom_histogram()
+
+# scatterplot
+ggplot(df, aes(x = col1, y = col2)) + geom_point(colour = "blue")
+
+
+
+## Exportation ##
+
+# Table en csv
+write.table(x = df, file = 'outputs/resultat_R.csv', sep = ';', row.names = FALSE)
+
+# Plots
+png('outputs/mongraphe.png') # Alloue et ouvre le fichier où inscrire le graphe
+ggplot(df, aes(x = col1, y = col2)) +
+  geom_point(colour = "blue")
+dev.off()           # Ferme le fichier
+
+# Objets R
+save(list = ls(), file = "outputs/env_entier.RData")
+# and to import them
+load("outputs/env_entier.RData")
+
+
+stat, p_value = mannwhitneyu(condition_A, condition_B)
+
+
+#Incliner legends x-axis pour que ce soit lisible
+plot_cmd + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#Visualize the RBrewerColor palette
+par(mar=c(3,4,2,2))
+display.brewer.all()
+
+
+
+#Map column1 of df1 to column3 of df2 for matching between column1 of df1 and column2 of df2
+library(dplyr)
+df1 <- df1 %>%
+  left_join(df2, by = c("column1" = "column2")) %>%
+  mutate(gene = coalesce(column3, column1)) %>%
+  select(-c(names_of_columns_of_df2)) 
+
+
+#Find duplicates in a R dataframe column
+df[duplicated(df$col_name) | duplicated(df$col_name, fromLast = TRUE), ]
+
+#########################################Seurat & Cell Ranger#################################
+#Main info about the count matrix
+head(R1_DMSO_1D@meta.data)
+
+#Access PCA results:
+R1_DMSO_1D[['pca']]
+
+#Display the proportion of variance explained by each PC:
+R1_DMSO_1D[['pca']]@stdev
+
+#Number of cells in Seurat Object
+ncol(name_of_Seurat_Object)
+
+#Number of genes
+nrow(name_of_Seurat_Object)
+
+#access the data of a Seurat Assay (called 'ADT' in this e.g.)
+GetAssayData(cbmc, 'ADT')
+
+# List the current default assay of a Seurat object
+DefaultAssay(cbmc)
+
+# Switch the default assay of a Seurat object to another assay
+DefaultAssay(cbmc) <- "ADT"
+
+#Seurat clusters
+cbmc@meta.data$seurat_clusters
+
+# Remove empty elements of a list of characters
+cleaned_my_list <- setdiff(my_list, "")
